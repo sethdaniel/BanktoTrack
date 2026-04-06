@@ -4,8 +4,12 @@
             [clojure.java.io :as io]))
 
 (def log-file-enabled? (atom false))
+(def ui-log-fn (atom nil))
+
+(defn set-ui-log-fn! [f]
+  (reset! ui-log-fn f))
 (def session-log (atom nil))
-(def logs-folder-path "./otbanks-logs")
+(def logs-folder-path "./bankdiddler-logs")
 (def project-name (atom "project"))
 
 (defn set-project-name [new-project-path]
@@ -35,9 +39,10 @@
            message)))
 
 (defn printlog "Print message and write to log file" [message]
-  (let [prefixed-message (str  "==> " message)]
+  (let [prefixed-message (str "==> " message)]
     (println prefixed-message)
-    (append-to-log! prefixed-message)))
+    (append-to-log! prefixed-message)
+    (when-let [f @ui-log-fn] (f prefixed-message))))
 
 (defn debug [message]
   (append-to-log! (str "DEBUG: " message)))

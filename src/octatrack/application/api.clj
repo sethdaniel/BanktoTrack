@@ -12,24 +12,28 @@
 (s/fdef copy-project
   :args (s/cat :source-folder-path string?
                :target-folder-path string?
-               :bank-pairs ::banks/bank-pairs))
+               :bank-pairs ::banks/bank-pairs
+               :copy-samples? boolean?))
 
 ;; Implementation
-(defn- copy-project [source-folder-path target-folder-path bank-pairs]
+(defn- copy-project [source-folder-path target-folder-path bank-pairs copy-samples?]
   (bank-files/copy-bank-pairs bank-pairs
                               source-folder-path
                               target-folder-path)
   (project-folders/copy-other-project-files source-folder-path
                                             target-folder-path)
   (log/printlog "Other project files copied")
+  (when copy-samples?
+    (project-folders/copy-samples source-folder-path target-folder-path)
+    (log/printlog "Samples copied"))
   (bank-files/show-missing-banks target-folder-path)
   nil) ;; return `nil` to not print out last returned value in console
 
-(defn copy-project-command [source-folder-path target-folder-path bank-pair-strs]
+(defn copy-project-command [source-folder-path target-folder-path bank-pair-strs & {:keys [copy-samples?] :or {copy-samples? false}}]
   (log/set-project-name source-folder-path)
   (log/printlog (str "Using project folder: \"" source-folder-path "\""))
   (let [source-project-folder-path (project-folders/validate-project-folder source-folder-path)
         bank-pairs (validation/pair-strs->bank-pairs bank-pair-strs)]
     (log/printlog (str "Copying \"" source-folder-path "\" to \"" target-folder-path "\""))
     (when (utils/create-directory target-folder-path) (log/printlog (str "Created target folder \"" target-folder-path "\"")))
-    (copy-project source-project-folder-path target-folder-path bank-pairs)))
+    (copy-project source-project-folder-path target-folder-path bank-pairs copy-samples?)))
