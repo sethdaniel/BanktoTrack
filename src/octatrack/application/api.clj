@@ -12,7 +12,8 @@
 (s/fdef copy-project
   :args (s/cat :source-folder-path string?
                :target-folder-path string?
-               :bank-pairs ::banks/bank-pairs))
+               :bank-pairs ::banks/bank-pairs
+               :copy-samples? boolean?))
 
 ;; Implementation
 (defn- copy-project [source-folder-path target-folder-path bank-pairs copy-samples?]
