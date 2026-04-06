@@ -1,4 +1,4 @@
-{:name "Octatrack Bank Manager"
+{:name "BankDiddler"
  :version "1.0"
  :paths ["src"]
 
@@ -20,6 +20,17 @@
 
            ;; Run with clj -M:dev 
            :dev {:main-opts ["-m" "octatrack.application.console"]}
+
+           ;; Create an image of the dependency graph with clj -X:hiera :cluster-depth 3 :layout :horizontal :output "docs"
+           ;; Run UI with clj -M:ui
+           ;; JavaFX classifier: "mac-aarch64" (Apple Silicon), "mac" (Intel), "win", "linux"
+           :ui {:extra-paths ["resources"]
+                :extra-deps {cljfx/cljfx                              {:mvn/version "1.7.22"}
+                             org.openjfx/javafx-controls$mac-aarch64 {:mvn/version "21"}
+                             org.openjfx/javafx-graphics$mac-aarch64 {:mvn/version "21"}
+                             org.openjfx/javafx-base$mac-aarch64     {:mvn/version "21"}
+                             org.openjfx/javafx-fxml$mac-aarch64     {:mvn/version "21"}}
+                :main-opts ["-m" "octatrack.application.ui"]}
 
            ;; Create an image of the dependency graph with clj -X:hiera :cluster-depth 3 :layout :horizontal :output "docs"
            :deps-graph

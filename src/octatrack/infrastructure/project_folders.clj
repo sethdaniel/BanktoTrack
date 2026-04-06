@@ -21,6 +21,19 @@
   (doall (->> (utils/get-directory-contents-tree source-folder-path)
               (map #(copy-other-project-file % target-folder-path)))))
 
+(defn copy-samples
+  "Copy all subdirectories (sample folders) from source project to target project"
+  [source-folder-path target-folder-path]
+  (let [source-dir (io/file source-folder-path)]
+    (doseq [item (.listFiles source-dir)
+            :when (.isDirectory item)]
+      (let [source-path (.toPath source-dir)]
+        (doseq [f (file-seq item)
+                :when (.isFile f)]
+          (let [target-file (io/file target-folder-path (str (.relativize source-path (.toPath f))))]
+            (.mkdirs (.getParentFile target-file))
+            (io/copy f target-file)))))))
+
 (defn validate-project-folder [project-folder-path]
   (let [folder (io/file project-folder-path)]
     (when-not (.exists folder)

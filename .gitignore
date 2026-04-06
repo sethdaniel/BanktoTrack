@@ -21,7 +21,7 @@ pom.xml.asc
 *.txt
 
 # Default folders used for data & testing
-otbanks-logs
+bankdiddler-logs
 /projects/
 /project folders/
 /test/data/
